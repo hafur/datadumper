@@ -1,5 +1,7 @@
 #Custom file
-conn_config
+conn_config.py
+wallet/
+config/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
