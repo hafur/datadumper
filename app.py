@@ -11,7 +11,7 @@ import psycopg2
 os.environ['TNS_ADMIN'] = 'wallet/'
 connection = cx_Oracle.connect('admin', 'WElcome_12345_', 'jokerdb_medium')
 
-f = open('data/demo2.csv', 'r')
+f = open('data/demo.csv', 'r')
 reader = csv.reader(f)
 
 longest, headers, type_list = [], [], []
@@ -59,7 +59,7 @@ for row in reader:
             longest[i] = len(row[i])
 f.close()
 
-statement = 'create table data2 ('
+statement = 'create table data ('
 
 for i in range(len(headers)):
     if type_list[i] == 'varchar':
@@ -74,7 +74,7 @@ cursor = connection.cursor()
 #print(statement)
 
 #executre create table statement
-#cursor.execute(statement)
+cursor.execute(statement)
 connection.commit()
 
 # try:
@@ -93,47 +93,36 @@ header_row = []
 
 def checkX(x):
     try:
-        output = (type(ast.literal_eval(x)))
-        output = x
-        return output
+        output = ast.literal_eval(x)
+
         #values = map((lambda x: ''+x+''), col)
     except SyntaxError:
-        output = '"'+x+'"'
+        output = ''+ x +''
+        
         return output
     except ValueError:
-        output = '"'+x+'"'
+        output = '"'+ x +'"'
         return output
     except TypeError:
         output = '"'+x+'"'
         return output
+    if type(output) in [int]:
+        output = ''+ x +'' 
+        return output
 
 
-
-
-
-with open ('data/demo2.csv', 'r') as f:
+with open ('data/demo.csv', 'r') as f:
     reader = csv.reader(f)
     header = next(reader)
     headers = map((lambda x: ''+x+''), header)
-    insert = 'INSERT INTO DATA2 (' + ",".join(headers).lower().lstrip().replace(" ","_").replace("-","_") + ") VALUES "
-    #print(insert)
-    # for row in reader:
-    #     values = map((lambda x: '"'+x+'"'), row)
-    #     #statement = statement + (insert +"("+ ", ".join(values) +");" )
-    #     statement = insert +"("+ ", ".join(values) +")"
-    #     print(statement)
-    #     cursor.execute(statement)
-    lines = f.readlines()[1:]
-    for row in lines:
-        for col in row:
-            output = checkX(row)
-            #print(output)
-            statement =  insert + '(' + output +',);'
-            print(statement)
-
-        # statement = insert +"("+ ", ".join(values) +")"
-        # #print(statement)
-        # #cursor.execute(statement)
+    insert = 'INSERT INTO DATA (' + ",".join(headers).lower().lstrip().replace(" ","_").replace("-","_") + ") VALUES "
+    print(insert)
+    for row in reader:
+        values = map((lambda x: ''+x+''), row)
+        #statement = statement + (insert +"("+ ", ".join(values) +");" )
+        statement = insert +"("+ ", ".join(values) +")"
+        print(statement)
+        cursor.execute(statement) 
 
 print("end")
 
